@@ -1,6 +1,6 @@
 import "./LoginPage.css";
 import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth.context";
 import authService from "../../services/auth.service";
 
@@ -46,7 +46,7 @@ function LoginPage() {
 
   return (
     <div className="LoginPage">
-      <h1>Login</h1>
+      <h1>Admin Login</h1>
 
       <form onSubmit={handleLoginSubmit}>
         <label>Email:</label>
@@ -63,9 +63,6 @@ function LoginPage() {
         <button type="submit">Login</button>
       </form>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-      <p>Don't have an account yet?</p>
-      <Link to={"/signup"}> Sign Up</Link>
     </div>
   );
 }

@@ -1,9 +1,7 @@
-import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
 import HomePage from "./pages/HomePage/HomePage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
-import SignupPage from "./pages/SignupPage/SignupPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 
 import Navbar from "./components/Navbar/Navbar";
@@ -18,23 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
 
-        <Route
-          path="/profile"
-          element={
-            <IsPrivate>
-              <ProfilePage />
-            </IsPrivate>
-          }
-        />
+        <Route path="/about" element={<ProfilePage />} />
 
-        <Route
-          path="/signup"
-          element={
-            <IsAnon>
-              <SignupPage />
-            </IsAnon>
-          }
-        />
         <Route
           path="/login"
           element={
