@@ -1,6 +1,31 @@
-function ProjectCard({ project }) {
+import { useContext } from "react";
+import { AuthContext } from "../../context/auth.context";
+
+function ProjectCard({ project, onEdit, onDelete }) {
+  const { isLoggedIn } = useContext(AuthContext);
+
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-white flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-white flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg relative">
+      {/* Admin: Edit/Delete Buttons */}
+      {isLoggedIn && (
+        <div className="absolute top-2 right-2 flex gap-2 z-10">
+          <button
+            onClick={() => onEdit(project)}
+            className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-semibold rounded shadow-sm hover:bg-gray-50 transition-colors"
+            title="Edit project"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(project)}
+            className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded shadow-sm hover:bg-red-700 transition-colors"
+            title="Delete project"
+          >
+            Delete
+          </button>
+        </div>
+      )}
+
       <img
         src={project.image_url}
         alt={project.name}

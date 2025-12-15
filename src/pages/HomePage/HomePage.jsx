@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import projectService from "../../services/project.service";
 import HeroSection from "../../components/HeroSection/HeroSection";
 import ProjectsSection from "../../components/ProjectsSection/ProjectsSection";
+import ProjectForm from "../../components/ProjectForm/ProjectForm";
 import Loading from "../../components/Loading/Loading";
 
 // Helper function to extract unique technologies from all projects
@@ -23,8 +24,13 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Fetch all projects on component mount
+  // Modal state
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+
+  // Fetch projects function (reusable)
+  const fetchProjects = () => {
+    setIsLoading(true);
     projectService
       .getAll()
       .then((response) => {
@@ -42,6 +48,11 @@ function HomePage() {
         setError("Failed to load projects. Please try again later.");
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    // Fetch all projects on component mount
+    fetchProjects();
   }, []);
 
   if (isLoading) return <Loading />;
@@ -56,10 +67,84 @@ function HomePage() {
     );
   }
 
+  // Admin handlers
+  const handleAddProject = () => {
+    setEditingProject(null); // Clear any editing project
+    setIsFormOpen(true);
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProject(project);
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingProject(null);
+  };
+
+  const handleSubmitProject = (formData, projectId) => {
+    if (projectId) {
+      // UPDATE existing project
+      projectService
+        .update(projectId, formData)
+        .then(() => {
+          console.log("Project updated successfully!");
+          handleCloseForm();
+          fetchProjects(); // Refresh the list
+        })
+        .catch((err) => {
+          console.error("Error updating project:", err);
+          alert("Failed to update project. Please try again.");
+        });
+    } else {
+      // CREATE new project
+      projectService
+        .create(formData)
+        .then(() => {
+          console.log("Project created successfully!");
+          handleCloseForm();
+          fetchProjects(); // Refresh the list
+        })
+        .catch((err) => {
+          console.error("Error creating project:", err);
+          alert("Failed to create project. Please try again.");
+        });
+    }
+  };
+
+  const handleDeleteProject = (project) => {
+    if (window.confirm(`Are you sure you want to delete "${project.name}"?`)) {
+      projectService
+        .delete(project.id)
+        .then(() => {
+          console.log("Project deleted successfully!");
+          fetchProjects(); // Refresh the list
+        })
+        .catch((err) => {
+          console.error("Error deleting project:", err);
+          alert("Failed to delete project. Please try again.");
+        });
+    }
+  };
+
   return (
     <div className="HomePage">
       <HeroSection technologies={technologies} />
-      <ProjectsSection projects={projects} />
+      <ProjectsSection
+        projects={projects}
+        onAddProject={handleAddProject}
+        onEditProject={handleEditProject}
+        onDeleteProject={handleDeleteProject}
+      />
+
+      {/* Project Form Modal */}
+      <ProjectForm
+        isOpen={isFormOpen}
+        onClose={handleCloseForm}
+        onSubmit={handleSubmitProject}
+        project={editingProject}
+      />
     </div>
   );
 }
