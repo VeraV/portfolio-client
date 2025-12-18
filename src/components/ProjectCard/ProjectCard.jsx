@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/auth.context";
+import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 function ProjectCard({ project, onEdit, onDelete }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -11,17 +12,17 @@ function ProjectCard({ project, onEdit, onDelete }) {
         <div className="absolute top-2 right-2 flex gap-2 z-10">
           <button
             onClick={() => onEdit(project)}
-            className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-semibold rounded shadow-sm hover:bg-gray-50 transition-colors"
+            className="p-2 bg-white border border-gray-300 text-gray-700 rounded shadow-sm hover:bg-gray-50 transition-colors"
             title="Edit project"
           >
-            Edit
+            <PencilSquareIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDelete(project)}
-            className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded shadow-sm hover:bg-red-700 transition-colors"
+            className="p-2 bg-red-600 text-white rounded shadow-sm hover:bg-red-700 transition-colors"
             title="Delete project"
           >
-            Delete
+            <XMarkIcon className="w-5 h-5" />
           </button>
         </div>
       )}

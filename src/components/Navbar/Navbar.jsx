@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/auth.context";
+import { KeyIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 
 function Navbar() {
   // Subscribe to the AuthContext to gain access to
@@ -29,20 +30,26 @@ function Navbar() {
         <div className="flex gap-4 items-center">
           {isLoggedIn && (
             <>
-              <span className="text-gray-700">Welcome, {user && user.name}</span>
+              <span className="text-gray-700">
+                Welcome, {user && user.name}
+              </span>
               <button
                 onClick={logOutUser}
                 className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded hover:bg-gray-300 transition-colors"
+                title="Logout"
               >
-                Logout
+                <ArrowRightStartOnRectangleIcon className="w-6 h-6" />
               </button>
             </>
           )}
 
           {!isLoggedIn && (
             <Link to="/login">
-              <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors">
-                Login
+              <button
+                className="p-2 text-blue-600 hover:text-blue-700 transition-colors"
+                title="Login"
+              >
+                <KeyIcon className="w-6 h-6" />
               </button>
             </Link>
           )}

@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import technologyService from "../../services/technology.service";
+import techCategoryService from "../../services/tech-category.service";
 import TechnologySelector from "../TechnologySelector/TechnologySelector";
 import CloudinaryUpload from "../CloudinaryUpload/CloudinaryUpload";
+import TechnologyForm from "../TechnologyForm/TechnologyForm";
 
 function ProjectForm({ isOpen, onClose, onSubmit, project }) {
   // All available technologies
   const [allTechnologies, setAllTechnologies] = useState([]);
+
+  // Tech categories for the technology form
+  const [techCategories, setTechCategories] = useState([]);
+
+  // Technology form modal state
+  const [isTechFormOpen, setIsTechFormOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -19,9 +27,10 @@ function ProjectForm({ isOpen, onClose, onSubmit, project }) {
     technologyIds: [], // Will add selector in next step
   });
 
-  // Fetch all technologies when modal opens
+  // Fetch all technologies and categories when modal opens
   useEffect(() => {
     if (isOpen) {
+      // Fetch technologies
       technologyService
         .getAll()
         .then((response) => {
@@ -29,6 +38,16 @@ function ProjectForm({ isOpen, onClose, onSubmit, project }) {
         })
         .catch((err) => {
           console.error("Error fetching technologies:", err);
+        });
+
+      // Fetch tech categories
+      techCategoryService
+        .getAll()
+        .then((response) => {
+          setTechCategories(response.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching tech categories:", err);
         });
     }
   }, [isOpen]);
@@ -66,37 +85,62 @@ function ProjectForm({ isOpen, onClose, onSubmit, project }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, project?.id]); // Only re-run when modal opens or project ID changes
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
+  }, []);
 
-  const handleTechnologyChange = (selectedIds) => {
+  const handleTechnologyChange = useCallback((selectedIds) => {
     setFormData((prev) => ({
       ...prev,
       technologyIds: selectedIds,
     }));
-  };
+  }, []);
 
-  const handleImageUpload = (imageUrl) => {
+  const handleImageUpload = useCallback((imageUrl) => {
     setFormData((prev) => ({
       ...prev,
       image_url: imageUrl,
     }));
-  };
+  }, []);
 
-  const handleAddNewTechnology = () => {
-    console.log("Add new technology");
-    // TODO: Open technology modal (Step 6)
-  };
+  const handleAddNewTechnology = useCallback(() => {
+    setIsTechFormOpen(true);
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleCloseTechForm = useCallback(() => {
+    setIsTechFormOpen(false);
+  }, []);
+
+  const handleSubmitTechnology = useCallback((techData) => {
+    technologyService
+      .create(techData)
+      .then(() => {
+        // Close the tech form
+        setIsTechFormOpen(false);
+        // Refresh the technology list
+        technologyService
+          .getAll()
+          .then((response) => {
+            setAllTechnologies(response.data);
+          })
+          .catch((err) => {
+            console.error("Error refreshing technologies:", err);
+          });
+      })
+      .catch((err) => {
+        console.error("Error creating technology:", err);
+        alert(`Failed to create technology: ${err.response?.data?.message || err.message}`);
+      });
+  }, []);
+
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     onSubmit(formData, project?.id);
-  };
+  }, [formData, project?.id, onSubmit]);
 
   // Don't render if modal is closed
   if (!isOpen) return null;
@@ -255,6 +299,14 @@ function ProjectForm({ isOpen, onClose, onSubmit, project }) {
           </div>
         </form>
       </div>
+
+      {/* Technology Form Modal (nested modal) */}
+      <TechnologyForm
+        isOpen={isTechFormOpen}
+        onClose={handleCloseTechForm}
+        onSubmit={handleSubmitTechnology}
+        categories={techCategories}
+      />
     </div>
   );
 }
