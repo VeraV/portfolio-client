@@ -7,7 +7,11 @@ import stepService from "../../services/step.service";
 import Loading from "../../components/Loading/Loading";
 import CloudinaryUpload from "../../components/CloudinaryUpload/CloudinaryUpload";
 import StepItem from "../../components/StepItem/StepItem";
-import { PencilSquareIcon, XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  XMarkIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 
 function ProjectPage() {
   const { projectId } = useParams();
@@ -29,8 +33,6 @@ function ProjectPage() {
   });
 
   // Step management state
-  const [editingStepId, setEditingStepId] = useState(null);
-  const [editStepData, setEditStepData] = useState({});
   const [showCreateStepForm, setShowCreateStepForm] = useState(false);
   const [createStepData, setCreateStepData] = useState({
     description: "",
@@ -48,7 +50,9 @@ function ProjectPage() {
     setIsLoading(true);
     Promise.all([
       projectService.getOne(projectId),
-      isLoggedIn ? manualService.getAllByProject(projectId) : Promise.resolve({ data: [] }),
+      isLoggedIn
+        ? manualService.getAllByProject(projectId)
+        : Promise.resolve({ data: [] }),
     ])
       .then(([projectRes, manualsRes]) => {
         setProject(projectRes.data);
@@ -137,39 +141,9 @@ function ProjectPage() {
   };
 
   // Step CRUD handlers
-  const handleEditStep = useCallback((step) => {
-    setEditingStepId(step.id);
-    setEditStepData({
-      description: step.description,
-      image_url: step.image_url,
-    });
-  }, []);
 
-  const handleCancelStepEdit = useCallback(() => {
-    setEditingStepId(null);
-    setEditStepData({});
-  }, []);
-
-  const handleSaveStepEdit = useCallback((stepId) => {
-    stepService
-      .update(stepId, editStepData)
-      .then(() => {
-        setEditingStepId(null);
-        setEditStepData({});
-        fetchProjectData();
-      })
-      .catch((err) => {
-        console.error("Error updating step:", err);
-        alert("Failed to update step. Please try again.");
-      });
-  }, [editStepData]);
-
-  const handleImageUploadStep = useCallback((imageUrl, isEdit = false) => {
-    if (isEdit) {
-      setEditStepData((prev) => ({ ...prev, image_url: imageUrl }));
-    } else {
-      setCreateStepData((prev) => ({ ...prev, image_url: imageUrl }));
-    }
+  const handleImageUploadStep = useCallback((imageUrl) => {
+    setCreateStepData((prev) => ({ ...prev, image_url: imageUrl }));
   }, []);
 
   const handleCreateStep = useCallback(() => {
@@ -330,7 +304,10 @@ function ProjectPage() {
                         type="text"
                         value={editFormData.title}
                         onChange={(e) =>
-                          setEditFormData({ ...editFormData, title: e.target.value })
+                          setEditFormData({
+                            ...editFormData,
+                            title: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                         placeholder="Title"
@@ -351,7 +328,10 @@ function ProjectPage() {
                         type="text"
                         value={editFormData.version}
                         onChange={(e) =>
-                          setEditFormData({ ...editFormData, version: e.target.value })
+                          setEditFormData({
+                            ...editFormData,
+                            version: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                         placeholder="Version"
@@ -443,7 +423,10 @@ function ProjectPage() {
                       type="text"
                       value={createFormData.title}
                       onChange={(e) =>
-                        setCreateFormData({ ...createFormData, title: e.target.value })
+                        setCreateFormData({
+                          ...createFormData,
+                          title: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                       placeholder="Title"
@@ -464,7 +447,10 @@ function ProjectPage() {
                       type="text"
                       value={createFormData.version}
                       onChange={(e) =>
-                        setCreateFormData({ ...createFormData, version: e.target.value })
+                        setCreateFormData({
+                          ...createFormData,
+                          version: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                       placeholder="Version"
@@ -479,7 +465,11 @@ function ProjectPage() {
                       <button
                         onClick={() => {
                           setShowCreateForm(false);
-                          setCreateFormData({ title: "", description: "", version: "" });
+                          setCreateFormData({
+                            title: "",
+                            description: "",
+                            version: "",
+                          });
                         }}
                         className="flex-1 px-3 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors"
                       >
@@ -557,7 +547,8 @@ function ProjectPage() {
                       <button
                         onClick={handleCreateStep}
                         disabled={
-                          !createStepData.description || !createStepData.image_url
+                          !createStepData.description ||
+                          !createStepData.image_url
                         }
                         className="flex-1 px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >

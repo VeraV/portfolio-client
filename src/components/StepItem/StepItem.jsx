@@ -49,24 +49,24 @@ function StepItem({ step, isLastStep, isAdmin, onStepUpdated }) {
 
   return (
     <div className="relative">
-      {/* Connecting Line */}
-      {!isLastStep && (
-        <div className="absolute left-6 top-16 bottom-0 w-0.5 bg-blue-400 z-0"></div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative">
         {/* Left Column: Step Number + Description */}
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start relative">
+          {/* Connecting Line */}
+          {!isLastStep && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-16 bottom-0 w-px bg-blue-300 z-0"></div>
+          )}
+
           {/* Step Number Circle */}
-          <div className="flex justify-center w-full mb-4">
-            <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-lg">
+          <div className="flex justify-center w-full mb-4 relative">
+            <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-normal shadow-lg">
               {step.step_number}
             </div>
           </div>
 
           {/* Edit Mode */}
           {isEditing ? (
-            <div className="w-full space-y-3 bg-gray-50 p-4 rounded-lg">
+            <div className="w-full space-y-3 bg-white p-4 rounded-lg relative z-10 shadow-sm">
               <textarea
                 value={editData.description}
                 onChange={handleDescriptionChange}
@@ -95,8 +95,8 @@ function StepItem({ step, isLastStep, isAdmin, onStepUpdated }) {
             </div>
           ) : (
             // Read Mode
-            <div className="w-full">
-              <div className="flex items-start justify-between mb-2">
+            <div className="w-full relative z-10">
+              <div className="flex items-start justify-between mb-2 bg-white px-4 py-2 rounded">
                 <p className="text-gray-700 leading-relaxed flex-grow">
                   {step.description}
                 </p>
