@@ -1,38 +1,57 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 
 function CloudinaryUpload({ imageUrl, onImageUpload }) {
   const cloudinaryRef = useRef();
   const widgetRef = useRef();
 
+  // Store the callback in a ref so we can use it without re-initializing the widget
+  const onImageUploadRef = useRef(onImageUpload);
+
   useEffect(() => {
-    // Initialize Cloudinary widget
-    cloudinaryRef.current = window.cloudinary;
-    widgetRef.current = cloudinaryRef.current.createUploadWidget(
-      {
-        cloudName: "dojvyjghs",
-        uploadPreset: "portfolio_unsigned",
-        folder: "portfolio",
-        sources: ["local", "url", "camera"],
-        multiple: false,
-        maxFileSize: 5000000, // 5MB
-        clientAllowedFormats: ["jpg", "jpeg", "png", "gif", "webp"],
-        maxImageWidth: 2000,
-        maxImageHeight: 2000,
-      },
-      (error, result) => {
-        if (!error && result && result.event === "success") {
-          // Upload successful - return the secure URL
-          onImageUpload(result.info.secure_url);
-        }
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-        }
-      }
-    );
+    onImageUploadRef.current = onImageUpload;
   }, [onImageUpload]);
 
+  useEffect(() => {
+    // Initialize Cloudinary widget only once on mount
+    if (!widgetRef.current && window.cloudinary) {
+      cloudinaryRef.current = window.cloudinary;
+      widgetRef.current = cloudinaryRef.current.createUploadWidget(
+        {
+          cloudName: "dojvyjghs",
+          uploadPreset: "portfolio_unsigned",
+          folder: "portfolio",
+          sources: ["local", "url", "camera"],
+          multiple: false,
+          maxFileSize: 5000000, // 5MB
+          clientAllowedFormats: ["jpg", "jpeg", "png", "gif", "webp"],
+          maxImageWidth: 2000,
+          maxImageHeight: 2000,
+        },
+        (error, result) => {
+          if (!error && result && result.event === "success") {
+            // Upload successful - use the ref to call the latest callback
+            onImageUploadRef.current(result.info.secure_url);
+          }
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+          }
+        }
+      );
+    }
+
+    // Cleanup function to destroy widget only on unmount
+    return () => {
+      if (widgetRef.current) {
+        widgetRef.current.destroy();
+        widgetRef.current = null;
+      }
+    };
+  }, []); // Empty array - only run once on mount
+
   const handleOpenWidget = () => {
-    widgetRef.current.open();
+    if (widgetRef.current) {
+      widgetRef.current.open();
+    }
   };
 
   return (
@@ -96,4 +115,4 @@ function CloudinaryUpload({ imageUrl, onImageUpload }) {
   );
 }
 
-export default CloudinaryUpload;
+export default memo(CloudinaryUpload);
