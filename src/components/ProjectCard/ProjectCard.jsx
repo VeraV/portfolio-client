@@ -14,7 +14,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
   return (
     <div
       onClick={handleSeeManual}
-      className="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-white flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg relative cursor-pointer"
+      className="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-white transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg relative cursor-pointer"
     >
       {/* Admin: Edit/Delete Buttons */}
       {isLoggedIn && (
@@ -42,31 +42,49 @@ function ProjectCard({ project, onEdit, onDelete }) {
         </div>
       )}
 
-      <img
-        src={project.image_url}
-        alt={project.name}
-        className="w-full h-48 object-cover"
-      />
-
-      <h3 className="mx-4 mt-4 mb-2 text-2xl font-semibold text-gray-800">
-        {project.name}
-      </h3>
-
-      <div className="flex flex-wrap gap-2 px-4 mb-3">
-        {project.techStack.map((ts) => (
+      {/* Two Column Layout: Text (left) and Image (right) on desktop, Stack on mobile */}
+      <div className="flex flex-col md:flex-row gap-6 p-6">
+        {/* Mobile: Image First */}
+        <div className="md:hidden w-full">
           <img
-            key={ts.id}
-            src={ts.technology.logo_url}
-            alt={ts.technology.name}
-            title={ts.technology.name}
-            className="w-6 h-6 object-contain"
+            src={project.image_url}
+            alt={project.name}
+            className="w-full h-48 object-cover rounded-lg"
           />
-        ))}
-      </div>
+        </div>
 
-      <p className="px-4 pb-4 text-gray-600 leading-relaxed flex-grow">
-        {project.description_short}
-      </p>
+        {/* Left Column: Name, Tech Stack, Description */}
+        <div className="flex-1 flex flex-col gap-4">
+          <h3 className="text-2xl font-semibold text-gray-800">
+            {project.name}
+          </h3>
+
+          <div className="flex flex-wrap gap-2">
+            {project.techStack.map((ts) => (
+              <img
+                key={ts.id}
+                src={ts.technology.logo_url}
+                alt={ts.technology.name}
+                title={ts.technology.name}
+                className="w-6 h-6 object-contain"
+              />
+            ))}
+          </div>
+
+          <p className="text-gray-600 leading-relaxed">
+            {project.description_short}
+          </p>
+        </div>
+
+        {/* Right Column: Image (Desktop only) */}
+        <div className="hidden md:block w-64 flex-shrink-0">
+          <img
+            src={project.image_url}
+            alt={project.name}
+            className="w-full h-40 object-cover rounded-lg"
+          />
+        </div>
+      </div>
     </div>
   );
 }

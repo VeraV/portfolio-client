@@ -4,9 +4,10 @@ import HeroSection from "../../components/HeroSection/HeroSection";
 import ProjectsSection from "../../components/ProjectsSection/ProjectsSection";
 import ProjectForm from "../../components/ProjectForm/ProjectForm";
 import Loading from "../../components/Loading/Loading";
+import technologyService from "../../services/technology.service";
 
 // Helper function to extract unique technologies from all projects
-const extractUniqueTechnologies = (projects) => {
+/*const extractUniqueTechnologies = (projects) => {
   const techMap = new Map();
   projects.forEach((project) => {
     project.techStack.forEach((ts) => {
@@ -16,7 +17,7 @@ const extractUniqueTechnologies = (projects) => {
     });
   });
   return Array.from(techMap.values());
-};
+};*/
 
 function HomePage() {
   const [projects, setProjects] = useState([]);
@@ -29,30 +30,27 @@ function HomePage() {
   const [editingProject, setEditingProject] = useState(null);
 
   // Fetch projects function (reusable)
-  const fetchProjects = () => {
+  const fetchData = () => {
     setIsLoading(true);
-    projectService
-      .getAll()
-      .then((response) => {
-        const projectsData = response.data;
+    Promise.all([projectService.getAll(), technologyService.getAll()])
+      .then(([responseProjects, responceTech]) => {
+        const projectsData = responseProjects.data;
+        const techData = responceTech.data;
         setProjects(projectsData);
-
-        // Extract unique technologies from projects
-        const uniqueTechs = extractUniqueTechnologies(projectsData);
-        setTechnologies(uniqueTechs);
-
+        setTechnologies(techData);
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching projects:", err);
-        setError("Failed to load projects. Please try again later.");
+        console.error("Error fetching projects or technology stach:", err);
+        setError(
+          "Failed to load projects or technologies. Please try again later."
+        );
         setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    // Fetch all projects on component mount
-    fetchProjects();
+    fetchData();
   }, []);
 
   if (isLoading) return <Loading />;
@@ -91,7 +89,7 @@ function HomePage() {
         .then(() => {
           console.log("Project updated successfully!");
           handleCloseForm();
-          fetchProjects(); // Refresh the list
+          fetchData(); // Refresh the list
         })
         .catch((err) => {
           console.error("Error updating project:", err);
@@ -104,7 +102,7 @@ function HomePage() {
         .then(() => {
           console.log("Project created successfully!");
           handleCloseForm();
-          fetchProjects(); // Refresh the list
+          fetchData(); // Refresh the list
         })
         .catch((err) => {
           console.error("Error creating project:", err);
@@ -119,7 +117,7 @@ function HomePage() {
         .delete(project.id)
         .then(() => {
           console.log("Project deleted successfully!");
-          fetchProjects(); // Refresh the list
+          fetchData(); // Refresh the list
         })
         .catch((err) => {
           console.error("Error deleting project:", err);
