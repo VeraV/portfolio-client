@@ -6,19 +6,6 @@ import ProjectForm from "../../components/ProjectForm/ProjectForm";
 import Loading from "../../components/Loading/Loading";
 import technologyService from "../../services/technology.service";
 
-// Helper function to extract unique technologies from all projects
-/*const extractUniqueTechnologies = (projects) => {
-  const techMap = new Map();
-  projects.forEach((project) => {
-    project.techStack.forEach((ts) => {
-      if (!techMap.has(ts.technology.id)) {
-        techMap.set(ts.technology.id, ts.technology);
-      }
-    });
-  });
-  return Array.from(techMap.values());
-};*/
-
 function HomePage() {
   const [projects, setProjects] = useState([]);
   const [technologies, setTechnologies] = useState([]);

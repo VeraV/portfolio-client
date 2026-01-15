@@ -71,7 +71,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
             ))}
           </div>
 
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-gray-600 leading-relaxed text-justify">
             {project.description_short}
           </p>
         </div>
