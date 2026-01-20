@@ -72,6 +72,7 @@ function ProfilePage() {
               Backend Development: Node.js, TypeScript, Express, RESTful APIs
             </li>
             <li>Database Management: PostgreSQL, MongoDB, Prisma ORM</li>
+            <li>Deployment & DevOps: Docker, Render</li>
             <li>Version Control: Git & GitHub</li>
             <li>Agile methodologies and collaborative development</li>
           </ul>
