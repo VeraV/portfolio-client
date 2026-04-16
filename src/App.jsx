@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 import Navbar from "./components/Navbar/Navbar";
 import IsPrivate from "./components/IsPrivate/IsPrivate";
@@ -29,6 +30,8 @@ function App() {
             </IsAnon>
           }
         />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
