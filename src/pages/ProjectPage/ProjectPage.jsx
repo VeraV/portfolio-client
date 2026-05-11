@@ -61,7 +61,11 @@ function ProjectPage() {
       })
       .catch((err) => {
         console.error("Error fetching project data:", err);
-        setError("Failed to load project. Please try again later.");
+        if (err.response?.status === 404) {
+          // Leave project as null so the "Project not found" branch renders.
+        } else {
+          setError("Failed to load project. Please try again later.");
+        }
         setIsLoading(false);
       });
   };
