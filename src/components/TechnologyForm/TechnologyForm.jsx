@@ -75,14 +75,14 @@ function TechnologyForm({ isOpen, onClose, onSubmit, categories }) {
           {/* Technology Name */}
           <div>
             <label
-              htmlFor="name"
+              htmlFor="tech_name"
               className="block text-sm font-semibold text-gray-700 mb-2"
             >
               Technology Name *
             </label>
             <input
               type="text"
-              id="name"
+              id="tech_name"
               name="name"
               value={formData.name}
               onChange={handleChange}
