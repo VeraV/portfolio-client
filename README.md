@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# Portfolio — Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The frontend of **[veramei.dev](https://veramei.dev/)** — a portfolio site that showcases my current work, the technologies I use, and the projects I've built.
 
-## Available Scripts
+The portfolio is itself a learning project: this is where I explored TypeScript on the server side, Docker, CI/CD pipelines, Tailwind CSS, and PostgreSQL. It also runs as a **single-admin** system — only I can sign in and edit content directly from the live site — and includes a **manuals** feature so hiring managers (and anyone else) can browse a project's features and screens without having to run it themselves.
 
-In the project directory, you can run:
+## Screenshots
 
-### `npm start`
+<p align="center">
+  <img src=".github/images/home.png" alt="Home page" width="800" />
+</p>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<p align="center">
+  <img src=".github/images/project-details.png" alt="Project details" width="395" />
+  <img src=".github/images/manual.png" alt="Project manual" width="395" />
+</p>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+- Public portfolio with project list, project details, and a curated technologies section
+- Per-project **manuals** — step-by-step walkthroughs with screenshots, so visitors can review features without running the projects
+- Single-admin authentication — JWT-protected routes for adding and editing content from the live site
+- Responsive design with Tailwind CSS
+- Client-side routing with React Router 7
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Tech stack
 
-### `npm run build`
+- React 19
+- React Router 7
+- Tailwind CSS
+- Axios
+- Create React App (build tooling — migration to Vite planned)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Project structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── components/     # Reusable UI (Navbar, Loading, IsPrivate, IsAnon)
+├── context/        # AuthContext — JWT state + verify on load
+├── pages/          # Route-level components (Home, Login, Profile, NotFound, ...)
+├── services/       # Axios clients for the API
+└── App.jsx         # Router setup
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting started
 
-### `npm run eject`
+### Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Node.js 20+
+- The [server](https://github.com/VeraV/portfolio-server) running locally on port 5005 (or pointed at a deployed instance)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Setup
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+git clone git@github.com:VeraV/portfolio-client.git
+cd portfolio/client
+npm install
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Environment variables
 
-## Learn More
+Create a `.env` file in `client/`:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+REACT_APP_SERVER_URL=http://localhost:5005
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Run
 
-### Code Splitting
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Opens [http://localhost:3000](http://localhost:3000).
 
-### Analyzing the Bundle Size
+## Available scripts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| Command         | Description                                                      |
+| --------------- | ---------------------------------------------------------------- |
+| `npm start`     | Development server with hot reload                               |
+| `npm test`      | Run tests in watch mode                                          |
+| `npm run build` | Production build (includes `_redirects` for Netlify SPA routing) |
 
-### Making a Progressive Web App
+## Known vulnerabilities
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+`npm audit` reports vulnerabilities in `react-scripts`' transitive dependencies (build and test tooling — not shipped to production). These cannot be fixed without breaking changes, as Create React App is no longer maintained.
 
-### Advanced Configuration
+Planned: migration to Vite, which will resolve these automatically.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Related
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Server](https://github.com/VeraV/portfolio-server) — Express + Prisma + PostgreSQL backend
+- [Tests](https://github.com/VeraV/portfolio-tests) — Playwright E2E test suite
